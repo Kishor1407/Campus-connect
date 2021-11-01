@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  {% load static %}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="{%static 'shop/index.css' %}"  />
+    <link rel="stylesheet" type="text/css" href="{%static 'shop/tshirts.css' %}"  />
+    <script
+      src="https://kit.fontawesome.com/a60ca36cd5.js"
+      crossorigin="anonymous"
+    ></script>
+    <title>CampusConnect : T-shirts</title>
+  </head>
+  <body>
+    <nav class="nav" id="toggle-collapse"></nav>
+   <!-- --------------Product Details---- -->
+    {% for product, range, n in allProds %}
+    <section class="product">
+        {% for i in product %}
+          {% ifequal i.category 'T-shirts' %}
+      <h2 class="product-category">{{product.0.subcategory}}</h2>
+      <div class="product-container">
+
+        <!-- -----------product cards------- -->
+        <div class="product-card">
+          <div class="product-image">
+            <span class="discount-tag">20% off</span>
+            <img src="/media/{{i.images}}" alt="" class="product-thumb" />
+            <a href="/productview/{{i.id}}"><button class="card-btn">Quick view </button></a>
+          </div>
+          <div class="product-info">
+            <h2 class="product-brand">{{i.product_name}}</h2>
+            <p class="product-short-des">{{i.desc}}</p>
+            <span class="price">{{i.price}}</span
+            ><span class="actual-price">550/-</span>
+          </div>
+        </div>
+          {% endifequal %}
+          {% endfor %}
+    </section>
+    {% endfor %}
+
+    <!-- --------------Footer------------ -->
+    <footer></footer>
+     <script type="text/javascript" src="{%static 'shop/tshirts.js' %}"></script>
+    <script type="text/javascript" src="{%static 'shop/footer.js' %}"></script>
+     <script type="text/javascript" src="{%static 'shop/nav.js' %}"></script>
+  </body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  {% load static %}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="{%static 'shop/index.css' %}"  />
+   <link rel="stylesheet" type="text/css" href="{%static 'shop/product.css' %}"  />
+    <script
+      src="https://kit.fontawesome.com/a60ca36cd5.js"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      .image-slider {
+  width: 500px;
+  height: 500px;
+  margin: 10px;
+  padding: 2px;
+  position: relative;
+  background-image: url("/media/{{product.images}}");
+  background-size: cover;
+}
+    </style>
+    <title>{{product.product_name}}</title>
+  </head>
+  <body>
+    <!-- ------------Navbar---------------- -->
+    <nav class="nav" id="toggle-collapse"></nav>
+
+    <!-- ------------Body------------------- -->
+    <section class="product-details">
+      <div class="product-details-conatiner">
+        <div class="image-slider">
+          <div class="product-images">
+            <img src="/media/{{product.images}}" alt="" class="active" />
+            <img src="/media/{{product.backimages}}" alt="" srcset="" />
+          </div>
+        </div>
+        <div class="details">
+          <h2 class="product-brand">{{product.product_name}}</h2>
+          <p class="product-short-des">
+           {{product.desc}}
+          </p>
+          <span class="product-price">{{product.price}}/-</span>
+          <span class="product-actual-price">550/-</span>
+          <span class="product-discount">( 20% off)</span>
+          <p class="product-sub-heading">Select size</p>
+          {% for i in product.size.Size %}
+          <input type="radio" name="size" value="{{i}}" hidden id="{{i}}-size" />
+           <label for="{{i}}-size" class="size-radio-btn">{{i}}</label>
+          {% endfor %}
+          <button  id="{{product.id}}" class="btn cart-btn cart">add to cart</button>
+          <button class="btn">buy</button>
+        </div>
+      </div>
+    </section>
+    <script>
+      const productImages = document.querySelectorAll(".product-images img"); // selecting all image thumbs
+      const productImageSlide = document.querySelector(".image-slider"); // seclecting image slider element
+
+      let activeImageSlide = 0; // default slider image
+
+      productImages.forEach((item, i) => {
+        // loopinh through each image thumb
+        item.addEventListener("click", () => {
+          // adding click event to each image thumbnail
+          productImages[activeImageSlide].classList.remove("active"); // removing active class from current image thumb
+          item.classList.add("active"); // adding active class to the current or clicked image thumb
+          productImageSlide.style.backgroundImage = `url('${item.src}')`; // setting up image slider's background image
+          activeImageSlide = i; // updating the image slider variable to track current thumb
+        });
+      });
+
+      // toggle size buttons
+
+      const sizeBtns = document.querySelectorAll(".size-radio-btn"); // selecting size buttons
+      let checkedBtn = 0; // current selected button
+
+      sizeBtns.forEach((item, j) => {
+        // looping through each button
+        item.addEventListener("click", () => {
+          // adding click event to each
+          sizeBtns[checkedBtn].classList.remove("check"); // removing check class from the current button
+          item.classList.add("check"); // adding check class to clicked button
+          checkedBtn = j; // upading the variable
+        });
+      });
+
+      //toggle cart buttons
+      const cartBtns = document.querySelectorAll(".btn"); // selecting size buttons
+      let checkedCartBtn = 0; // current selected button
+
+      cartBtns.forEach((item, j) => {
+        // looping through each button
+        item.addEventListener("click", () => {
+          // adding click event to each
+          cartBtns[checkedCartBtn].classList.remove("cart-btn"); // removing check class from the current button
+          item.classList.add("cart-btn"); // adding check class to clicked button
+          checkedCartBtn = j; // upading the variable
+        });
+      });
+    </script>
+    <!-- ------------Footer---------------- -->
+    <footer></footer>
+    <script type="text/javascript" src="{%static 'shop/footer.js' %}"></script>
+     <script type="text/javascript" src="{%static 'shop/nav.js' %}"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+     <script type="text/javascript" src="{%static 'shop/mycart.js' %}"></script>
+  </body>
+</html>

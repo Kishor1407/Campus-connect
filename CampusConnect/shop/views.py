@@ -114,3 +114,6 @@ def handelLogout(request):
 
 def cart(request):
     return render(request, 'shop/Cart.html')
+
+
+

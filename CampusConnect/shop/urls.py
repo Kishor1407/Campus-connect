@@ -14,4 +14,5 @@ urlpatterns = [
     path('handellogin', views.handeLogin, name="handleLogin"),
     path('logout/', views.handelLogout, name="handleLogout"),
     path('cart/', views.cart, name="cart"),
+
 ]

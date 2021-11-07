@@ -18,37 +18,13 @@
     <div class="cart-section">
       <div class="product-list">
         <p class="section-heading">your cart</p>
-        <div class="cart">
-          <!-- cart product goes here -->
-          <!-- <img src="./img/empty-cart.png" alt="" class="empty-img"> -->
-          <!-- <div class="sn-product">
-            <img
-              src="./img/product image 1.png"
-              alt=""
-              class="sn-product-img"
-            />
-            <div class="sn-text">
-              <p class="sn-product-name">BRAND</p>
-              <p class="sn-des">This is a short line</p>
-            </div>
-            <div class="item-counter">
-              <button class="counter-btn decrement">-</button>
-              <p class="item-count">1</p>
-              <button class="counter-btn decrement">+</button>
-            </div>
-            <p class="sn-price">450/-</p>
-            <button class="sn-delete-btn"><img src="./img/close.png" alt=""></button>
-          </div> -->
-        </div>
-        <p class="section-heading">your wishlist</p>
-        <div class="wishlist">
-          <!-- wishlist product goes here -->
+        <div class="cart" id="items">
         </div>
       </div>
       <div class="checkout-section">
         <div class="checkout-box">
           <p class="text">your total bill</p>
-          <h1 class="bill">00/-</h1>
+          <h1 class="bill"><span id="totalprice"></span>/- </h1>
           <a href="/checkout" class="checkout-btn">checkout</a>
         </div>
       </div>
@@ -57,8 +33,71 @@
     <footer class="footer"></footer>
 
     <script type="text/javascript" src="{%static 'shop/footer.js' %}"></script>
-    <script type="text/javascript" src="{%static 'shop/home.js' %}"></script>
     <script type="text/javascript" src="{%static 'shop/nav.js' %}"></script>
-    <script type="text/javascript" src="{%static 'shop/cart.js' %}"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+
+var sum = 0;
+var totalprice = 0;
+if ($.isEmptyObject(cart)) {
+    mystr = `<p><img src="{%static 'shop/emptycart.jpeg' %}"/></p>`
+    $('#items').append(mystr);
+} else {
+    for (var item in cart) {
+        let name = cart[item][1];
+        let qty = cart[item][0];
+        let price = cart[item][2];
+        sum = sum + qty;
+        itemprice = qty * price;
+        totalprice = totalprice + itemprice;
+        mystr =`
+        <div class="sn-product">
+        <img
+        {% if product.id == k %}
+              src="{{product.images}}"
+              alt=""
+              class="sn-product-img"
+            />
+            {% endif %}
+            <div class="sn-text">
+              <p class="sn-product-name">${name}</p>
+              <p class="sn-des"></p>
+            </div>
+            <div class="item-counter">
+              <button class="counter-btn decrement" id="minus`+item+`">-</button>
+              <p class="item-count" id="count">${qty}</p>
+              <button class="counter-btn increment" id="plus`+item+`">+</button>
+            </div>
+            <p class="sn-price">${itemprice}/-</p>
+            </div>`
+        $('#items').append(mystr);
+        }
+    }
+
+        $('.item-counter').on("click", "button.decrement", function() {
+    a = this.id.slice(5, );
+    cart[a][0] = cart[a][0] - 1;
+    cart[a][0] = Math.max(0, cart[a][0]);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    if ( cart[a][0] == 0){
+    delete cart[a];
+    localStorage.setItem('cart', JSON.stringify(cart));
+    }
+    window.location.reload();
+   });
+$('.item-counter').on("click", "button.increment", function() {
+    a = this.id.slice(4, );
+    console.log(a)
+    cart[a][0] = cart[a][0] + 1;
+    localStorage.setItem('cart', JSON.stringify(cart));
+    window.location.reload();
+});
+document.getElementById('totalprice').innerHTML = totalprice;
+
+</script>
   </body>
 </html>

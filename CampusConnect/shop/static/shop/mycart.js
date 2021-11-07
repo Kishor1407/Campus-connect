@@ -16,7 +16,7 @@ else
 {
 qty = 1;
 name=document.getElementById('name').innerHTML;
-name=document.getElementByClassName('size-radio-btn').innerText;
+name=document.getElementsByClassName('size-radio-btn').innerText;
 cart[idstr] = [qty, name, size];
 }
 console.log(cart);

@@ -51,21 +51,23 @@ if ($.isEmptyObject(cart)) {
         let name = cart[item][1];
         let qty = cart[item][0];
         let price = cart[item][2];
+        let size = cart[item][3];
+        let image = cart[item][4];
         sum = sum + qty;
         itemprice = qty * price;
         totalprice = totalprice + itemprice;
         mystr =`
         <div class="sn-product">
         <img
-        {% if product.id == k %}
-              src="{{product.images}}"
+
+              src="${image}"
               alt=""
               class="sn-product-img"
             />
-            {% endif %}
+
             <div class="sn-text">
               <p class="sn-product-name">${name}</p>
-              <p class="sn-des"></p>
+              <p class="sn-des">${size}</p>
             </div>
             <div class="item-counter">
               <button class="counter-btn decrement" id="minus`+item+`">-</button>

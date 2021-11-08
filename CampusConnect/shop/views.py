@@ -114,7 +114,7 @@ def handelLogout(request):
 
 def cart(request):
     prod = Product.objects.all
-    product = {'product':prod}
+    product = {'product': prod}
     return render(request, 'shop/Cart.html', product)
 
 

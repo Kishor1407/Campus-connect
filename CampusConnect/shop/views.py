@@ -44,7 +44,7 @@ def productview(request, myid):
 
 
 def aboutus(request):
-    return render(request, 'shop/aboutus.html')
+    return render(request, 'shop/aboutUs.html')
 
 
 def signup(request):

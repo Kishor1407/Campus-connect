@@ -43,8 +43,13 @@ const createNav = () => {
                 <a href="#">
                 <i class="far fa-user-circle" id="user-img" style="font-size:20px color:white"></i>
                 <div class="login-logout-popup hide">
-                <p class="account-info">Log in as , name</p>
+                {% if user.is_authenticated %}
+                <p class="account-info">Logged in as , {{request.user}}</p>
                 <button class="btn" id="user-btn">Log out</button>
+                {% else %}
+                <p class="account-info">Login to place order</p>
+                <button class="btn" id="user-btn">Login</button>
+                {% endif %}
                 </div>
                 </a>
                 <a href="/cart"><i class="fas fa-shopping-cart" style="font-size:20px color:white"></i></a>
@@ -63,14 +68,4 @@ const actionBtn=document.querySelector('#user-btn');
 userImageButton.addEventListener('click',()=>{
     userPop.classList.toggle('hide');
 })
-window.onload=()=> {
-
-        //means user is logged out
-        popuptext.innerHTML='log in to place order'
-        actionBtn.innerHTML='log in';
-        actionBtn.addEventListener('click',()=>{
-            location.href='/login';
-        })
-
-
 }

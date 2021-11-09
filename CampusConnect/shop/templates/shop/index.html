@@ -108,8 +108,13 @@ const createNav = () => {
                 <a href="#">
                 <i class="far fa-user-circle" id="user-img" style="font-size:20px color:white"></i>
                 <div class="login-logout-popup hide">
-                <p class="account-info">Log in as , name</p>
-                <button class="btn" id="user-btn">Log out</button>
+                {% if user.is_authenticated %}
+                <p class="account-info">Logged in as , {{request.user}}</p>
+                <a href="/logout"><button class="btn" id="user-btn">Log out</button></a>
+                {% else %}
+                <p class="account-info">Login to place order</p>
+                <a href="/login"><button class="btn" id="user-btn">Login</button></a>
+                {% endif %}
                 </div>
                 </a>
                 <a href="/cart"><i class="fas fa-shopping-cart" style="font-size:20px color:white"></i></a>
@@ -128,14 +133,6 @@ const actionBtn=document.querySelector('#user-btn');
 userImageButton.addEventListener('click',()=>{
     userPop.classList.toggle('hide');
 })
-
-
-        //means user is logged out
-        popuptext.innerHTML='log in to place order'
-        actionBtn.innerHTML='log in';
-        actionBtn.addEventListener('click',()=>{
-            location.href='/login';
-        })
 </script>
     <!-- <script src="./js/script.js"></script> -->
     <script type="text/javascript" src="{%static 'shop/footer.js' %}"></script>

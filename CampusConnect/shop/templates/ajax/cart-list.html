@@ -1,0 +1,55 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{%static 'shop/cart.css' %}"  />
+    <link rel="stylesheet" type="text/css" href="{%static 'shop/index.css' %}"  />
+    <style>.login-logout-popup{
+  position: absolute;
+  left: 89%;
+  transform: translateX(-50%);
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  top: 5rem;
+  width: 160px;
+  transition: 0.5s;
+  border: 2px solid #f5f5f5;
+  z-index: 9;
+}</style>
+<div class="cart-section" id="cart-list">
+      <div class="product-list">
+        <p class="section-heading">your cart</p>
+          <div class="cart">
+            {% if data %}
+        {% for productid,items in data.items %}
+        <div class="sn-product">
+        <img
+              src="{{items.image}}"
+              alt=""
+              class="sn-product-img"
+            />
+
+            <div class="sn-text">
+              <p class="sn-product-name">{{items.name}}</p>
+              <p class="sn-des">{{items.size}}</p>
+            </div>
+            <div class="item-counter">
+              <button class="counter-btn decrement" id="minus`+item+`">-</button>
+              <p class="item-count" id="count">{{items.qty}}</p>
+              <button class="counter-btn increment" id="plus`+item+`">+</button>
+            </div>
+            <p class="sn-price">{% widthratio items.price 1 items.qty %}/-</p>
+          <button class="sn-delete-btn" data-item="{{productid}}"></button>
+            </div>
+        {% endfor %}
+            {% else %}
+            <p><img src="{%static 'shop/emptycart.jpeg' %}"></p>
+            {% endif %}
+      </div>
+      </div>
+      <div class="checkout-section">
+        <div class="checkout-box">
+          <p class="text">your total bill</p>
+          <h1 class="bill"><span id="totalprice"></span>{{total}}/- </h1>
+          <a href="/checkout" class="checkout-btn">checkout</a>
+        </div>
+      </div>
+    </div>

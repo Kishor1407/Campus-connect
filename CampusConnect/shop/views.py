@@ -1,5 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
+
 from .models import Product
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -141,9 +143,12 @@ def managecart(request):
 
 def cart(request):
     total = 0
-    for p_id, item in request.session['cart'].items():
-        total += int(item['qty']) * float(item['price'])
-    return render(request, 'shop/Cart.html', {'data': request.session['cart'], 'total':total})
+    if 'cart' in request.session:
+        for p_id, item in request.session['cart'].items():
+            total += int(item['qty']) * float(item['price'])
+        return render(request, 'shop/Cart.html', {'data': request.session['cart'], 'total': total})
+    else:
+        return render(request, 'shop/Cart.html')
 
 
 def delete_items(request):
@@ -156,6 +161,6 @@ def delete_items(request):
     total = 0
     for p_id, item in request.session['cart'].items():
         total += int(item['qty']) * float(item['price'])
-    return redirect('/')
-
+    t = render_to_string('ajax/cart-list.html', {'data': request.session['cart'], 'total': total})
+    return JsonResponse({'data': t})
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" href="{%static 'shop/cart.css' %}"  />
+      <link rel="stylesheet" type="text/css" href="{%static 'shop/cart.css' %}"  />
     <link rel="stylesheet" type="text/css" href="{%static 'shop/index.css' %}"  />
     <style>.login-logout-popup{
   position: absolute;
@@ -19,7 +19,9 @@
   transition: 0.5s;
   border: 2px solid #f5f5f5;
   z-index: 9;
-}</style>
+}
+
+</style>
     <script
       src="https://kit.fontawesome.com/a60ca36cd5.js"
       crossorigin="anonymous"
@@ -28,9 +30,11 @@
   </head>
   <body>
     <nav class="nav" id="toggle-collapse"></nav>
-    <div class="cart-section" id="cart-list">
+    <div class="cart-section" id="cartlist">
       <div class="product-list">
         <p class="section-heading">your cart</p>
+          <div class="cart">
+            {% if data %}
         {% for productid,items in data.items %}
         <div class="sn-product">
         <img
@@ -52,6 +56,10 @@
           <button class="sn-delete-btn" data-item="{{productid}}"></button>
             </div>
         {% endfor %}
+            {% else %}
+            <p><img src="{%static 'shop/emptycart.jpeg' %}"></p>
+            {% endif %}
+      </div>
       </div>
       <div class="checkout-section">
         <div class="checkout-box">
@@ -146,6 +154,9 @@ userImageButton.addEventListener('click',()=>{
         'id': Pid,
     },
     datatype:'json',
+    success:function(res){
+        $("#cartlist").html(res.data);
+    }
 });
 });
 </script>

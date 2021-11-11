@@ -7,6 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="{%static 'shop/cart.css' %}"  />
     <link rel="stylesheet" type="text/css" href="{%static 'shop/index.css' %}"  />
+    <style>.login-logout-popup{
+  position: absolute;
+  left: 89%;
+  transform: translateX(-50%);
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  top: 5rem;
+  width: 160px;
+  transition: 0.5s;
+  border: 2px solid #f5f5f5;
+  z-index: 9;
+}</style>
     <script
       src="https://kit.fontawesome.com/a60ca36cd5.js"
       crossorigin="anonymous"
@@ -15,16 +28,35 @@
   </head>
   <body>
     <nav class="nav" id="toggle-collapse"></nav>
-    <div class="cart-section">
+    <div class="cart-section" id="cart-list">
       <div class="product-list">
         <p class="section-heading">your cart</p>
-        <div class="cart" id="items">
-        </div>
+        {% for productid,items in data.items %}
+        <div class="sn-product">
+        <img
+              src="{{items.image}}"
+              alt=""
+              class="sn-product-img"
+            />
+
+            <div class="sn-text">
+              <p class="sn-product-name">{{items.name}}</p>
+              <p class="sn-des">{{items.size}}</p>
+            </div>
+            <div class="item-counter">
+              <button class="counter-btn decrement" id="minus`+item+`">-</button>
+              <p class="item-count" id="count">{{items.qty}}</p>
+              <button class="counter-btn increment" id="plus`+item+`">+</button>
+            </div>
+            <p class="sn-price">{% widthratio items.price 1 items.qty %}/-</p>
+          <button class="sn-delete-btn" data-item="{{productid}}"></button>
+            </div>
+        {% endfor %}
       </div>
       <div class="checkout-section">
         <div class="checkout-box">
           <p class="text">your total bill</p>
-          <h1 class="bill"><span id="totalprice"></span>/- </h1>
+          <h1 class="bill"><span id="totalprice"></span>{{total}}/- </h1>
           <a href="/checkout" class="checkout-btn">checkout</a>
         </div>
       </div>
@@ -105,71 +137,17 @@ userImageButton.addEventListener('click',()=>{
 })
 </script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>if (localStorage.getItem('cart') == null) {
-    var cart = {};
-} else {
-    cart = JSON.parse(localStorage.getItem('cart'));
-}
-
-var sum = 0;
-var totalprice = 0;
-if ($.isEmptyObject(cart)) {
-    mystr = `<p><img src="{%static 'shop/emptycart.jpeg' %}"/></p>`
-    $('#items').append(mystr);
-} else {
-    for (var item in cart) {
-        let name = cart[item][1];
-        let qty = cart[item][0];
-        let price = cart[item][2];
-        let size = cart[item][3];
-        let image = cart[item][4];
-        sum = sum + qty;
-        itemprice = qty * price;
-        totalprice = totalprice + itemprice;
-        mystr =`
-        <div class="sn-product">
-        <img
-
-              src="${image}"
-              alt=""
-              class="sn-product-img"
-            />
-
-            <div class="sn-text">
-              <p class="sn-product-name">${name}</p>
-              <p class="sn-des">${size}</p>
-            </div>
-            <div class="item-counter">
-              <button class="counter-btn decrement" id="minus`+item+`">-</button>
-              <p class="item-count" id="count">${qty}</p>
-              <button class="counter-btn increment" id="plus`+item+`">+</button>
-            </div>
-            <p class="sn-price">${itemprice}/-</p>
-            </div>`
-        $('#items').append(mystr);
-        }
-    }
-
-        $('.item-counter').on("click", "button.decrement", function() {
-    a = this.id.slice(5, );
-    cart[a][0] = cart[a][0] - 1;
-    cart[a][0] = Math.max(0, cart[a][0]);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    if ( cart[a][0] == 0){
-    delete cart[a];
-    localStorage.setItem('cart', JSON.stringify(cart));
-    }
-    window.location.reload();
-   });
-$('.item-counter').on("click", "button.increment", function() {
-    a = this.id.slice(4, );
-    console.log(a)
-    cart[a][0] = cart[a][0] + 1;
-    localStorage.setItem('cart', JSON.stringify(cart));
-    window.location.reload();
+  <script>
+  $(document).on('click', '.sn-delete-btn', function(){
+    var Pid = $(this).attr('data-item');
+    $.ajax({
+    url:'/delete-from-cart',
+    data:{
+        'id': Pid,
+    },
+    datatype:'json',
 });
-document.getElementById('totalprice').innerHTML = totalprice;
-
+});
 </script>
   </body>
 </html>

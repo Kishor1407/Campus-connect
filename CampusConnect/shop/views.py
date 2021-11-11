@@ -1,10 +1,11 @@
 from django.shortcuts import render, HttpResponse, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Product
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth  import authenticate,  login, logout
 from django.db import IntegrityError
+import json
 # Create your views here.
 
 
@@ -112,10 +113,49 @@ def handelLogout(request):
     return redirect('/')
 
 
-def cart(request):
-    prod = Product.objects.all
-    product = {'product': prod}
-    return render(request, 'shop/Cart.html', product)
+def managecart(request):
+    cartdata = {}
+    cartdata[str(request.GET['id'])] = {
+        'id': request.GET['id'],
+        'qty': request.GET['qty'],
+        'name': request.GET['name'],
+        'price': int(request.GET['price']),
+        'size': request.GET['size'],
+        'image': request.GET['image']
+    }
+    if 'cart' in request.session:
+        if str(request.GET['id']) in request.session['cart']:
+            ca_rt = request.session['cart']
+            ca_rt[str(request.GET['id'])]['qty'] = int(ca_rt[str(request.GET['id'])]['qty']) + 1
+            ca_rt[str(request.GET['id'])]['size'] = ca_rt[str(request.GET['id'])]['size'] + "," + request.GET['size']
+            ca_rt.update(ca_rt)
+            request.session['cart'] = ca_rt
+        else:
+            ca_rt = request.session['cart']
+            ca_rt.update(cartdata)
+            request.session['cart'] = ca_rt
+    else:
+        request.session['cart'] = cartdata
+    return JsonResponse({'data': request.session['cart']})
 
+
+def cart(request):
+    total = 0
+    for p_id, item in request.session['cart'].items():
+        total += int(item['qty']) * float(item['price'])
+    return render(request, 'shop/Cart.html', {'data': request.session['cart'], 'total':total})
+
+
+def delete_items(request):
+    pid = str(request.GET['id'])
+    if 'cart' in request.session:
+        if pid in request.session['cart']:
+            ca_rt = request.session['cart']
+            del request.session['cart'][pid]
+            request.session['cart'] = ca_rt
+    total = 0
+    for p_id, item in request.session['cart'].items():
+        total += int(item['qty']) * float(item['price'])
+    return redirect('/')
 
 

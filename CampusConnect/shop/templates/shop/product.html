@@ -21,6 +21,19 @@
   background-image: url("/media/{{product.images}}");
   background-size: cover;
 }
+.login-logout-popup{
+  position: absolute;
+  left: 89%;
+  transform: translateX(-50%);
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  top: 5rem;
+  width: 160px;
+  transition: 0.5s;
+  border: 2px solid #f5f5f5;
+  z-index: 9;
+}
     </style>
     <title>{{product.product_name}}</title>
   </head>
@@ -42,7 +55,7 @@
           <p class="product-short-des">
            {{product.desc}}
           </p>
-          <span class="product-price" id="price">{{product.price}}/-</span>
+            <span class="product-price" ><span id="price">{{product.price}}</span>/-</span>
           <span class="product-actual-price">550/-</span>
           <span class="product-discount">( 20% off)</span>
           <p class="product-sub-heading">Select size</p>
@@ -178,29 +191,28 @@ userImageButton.addEventListener('click',()=>{
 })
 </script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-     <script>   if(localStorage.getItem('cart') == null){
-var cart = {};
-}
-else
-{
-cart = JSON.parse(localStorage.getItem('cart'));
-}
+     <script>
 $('.cart').click(function(){
-var idstr = this.id.toString();
-k = parseInt(idstr);
-if (cart[idstr] !=undefined){
-cart[idstr][0] = cart[idstr][0] + 1;
-}
-else
-{
+id ={{product.id}}
 qty = 1;
 name=document.getElementById('name').innerHTML;
 price=document.getElementById('price').innerHTML;
 var size=$('.check').text();
 image = "/media/{{product.images}}";
-cart[idstr] = [qty, name, parseInt(price), size, image];
-}
-localStorage.setItem('cart', JSON.stringify(cart));
+console.log(id, qty, name, price, size, image);
+$.ajax({
+    url:'/managecart',
+    data:{
+        'id': id,
+        'qty': qty,
+        'name': name,
+        'price': price,
+        'size': size,
+        'image': image,
+    },
+    datatype:'json',
+
+});
 });
 </script>
   </body>

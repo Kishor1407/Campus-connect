@@ -14,5 +14,7 @@ urlpatterns = [
     path('handellogin', views.handeLogin, name="handleLogin"),
     path('logout/', views.handelLogout, name="handleLogout"),
     path('cart/', views.cart, name="cart"),
+    path('managecart/', views.managecart, name="managecart"),
+    path('delete-from-cart/', views.delete_items, name="delete_items"),
 
 ]

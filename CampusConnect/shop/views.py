@@ -184,3 +184,9 @@ def update_items(request):
     t = render_to_string('ajax/cart-list.html', {'data': request.session['cart'], 'total': total})
     return JsonResponse({'data': t})
 
+
+def checkout(request):
+    total = 0
+    for p_id, item in request.session['cart'].items():
+        total += int(item['qty']) * float(item['price'])
+    return render(request, 'shop/checkout.html', {'total': total})

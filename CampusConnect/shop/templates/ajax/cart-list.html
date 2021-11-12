@@ -1,20 +1,4 @@
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{%static 'shop/cart.css' %}"  />
-    <link rel="stylesheet" type="text/css" href="{%static 'shop/index.css' %}"  />
-    <style>.login-logout-popup{
-  position: absolute;
-  left: 89%;
-  transform: translateX(-50%);
-  padding: 10px;
-  background: #fff;
-  border-radius: 10px;
-  top: 5rem;
-  width: 160px;
-  transition: 0.5s;
-  border: 2px solid #f5f5f5;
-  z-index: 9;
-}</style>
-<div class="cart-section" id="cart-list">
       <div class="product-list">
         <p class="section-heading">your cart</p>
           <div class="cart">
@@ -32,9 +16,9 @@
               <p class="sn-des">{{items.size}}</p>
             </div>
             <div class="item-counter">
-              <button class="counter-btn decrement" id="minus`+item+`">-</button>
+              <button class="counter-btn decrement" id="minus" data-item="{{productid}}">-</button>
               <p class="item-count" id="count">{{items.qty}}</p>
-              <button class="counter-btn increment" id="plus`+item+`">+</button>
+              <button class="counter-btn increment" id="plus" data-item="{{productid}}">+</button>
             </div>
             <p class="sn-price">{% widthratio items.price 1 items.qty %}/-</p>
           <button class="sn-delete-btn" data-item="{{productid}}"></button>
@@ -52,4 +36,3 @@
           <a href="/checkout" class="checkout-btn">checkout</a>
         </div>
       </div>
-    </div>

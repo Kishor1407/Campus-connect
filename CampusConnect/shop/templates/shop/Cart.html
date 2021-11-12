@@ -48,9 +48,9 @@
               <p class="sn-des">{{items.size}}</p>
             </div>
             <div class="item-counter">
-              <button class="counter-btn decrement" id="minus`+item+`">-</button>
+              <button class="counter-btn decrement" id="minus" data-item="{{productid}}">-</button>
               <p class="item-count" id="count">{{items.qty}}</p>
-              <button class="counter-btn increment" id="plus`+item+`">+</button>
+              <button class="counter-btn increment" id="plus" data-item="{{productid}}">+</button>
             </div>
             <p class="sn-price">{% widthratio items.price 1 items.qty %}/-</p>
           <button class="sn-delete-btn" data-item="{{productid}}"></button>
@@ -152,6 +152,36 @@ userImageButton.addEventListener('click',()=>{
     url:'/delete-from-cart',
     data:{
         'id': Pid,
+    },
+    datatype:'json',
+    success:function(res){
+        $("#cartlist").html(res.data);
+    }
+});
+});
+$(document).on('click', '.decrement', function(){
+    var Pid = $(this).attr('data-item');
+    var val = $(this).attr('id');
+    $.ajax({
+    url:'/update-cart',
+    data:{
+        'id': Pid,
+        'val': val,
+    },
+    datatype:'json',
+    success:function(res){
+        $("#cartlist").html(res.data);
+    }
+});
+});
+$(document).on('click', '.increment', function(){
+    var Pid = $(this).attr('data-item');
+    var val = $(this).attr('id');
+    $.ajax({
+    url:'/update-cart',
+    data:{
+        'id': Pid,
+        'val': val,
     },
     datatype:'json',
     success:function(res){

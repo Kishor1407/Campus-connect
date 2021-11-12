@@ -164,3 +164,23 @@ def delete_items(request):
     t = render_to_string('ajax/cart-list.html', {'data': request.session['cart'], 'total': total})
     return JsonResponse({'data': t})
 
+
+def update_items(request):
+    pid = str(request.GET['id'])
+    value = request.GET['val']
+    if 'cart' in request.session:
+        if pid in request.session['cart']:
+            ca_rt = request.session['cart']
+            if value == 'minus':
+                request.session['cart'][pid]['qty'] = max(0, (int(request.session['cart'][pid]['qty']) - 1))
+            elif value == 'plus':
+                request.session['cart'][pid]['qty'] = int(request.session['cart'][pid]['qty']) + 1
+            if request.session['cart'][pid]['qty'] == 0:
+                del request.session['cart'][pid]
+            request.session['cart'] = ca_rt
+    total = 0
+    for p_id, item in request.session['cart'].items():
+        total += int(item['qty']) * float(item['price'])
+    t = render_to_string('ajax/cart-list.html', {'data': request.session['cart'], 'total': total})
+    return JsonResponse({'data': t})
+

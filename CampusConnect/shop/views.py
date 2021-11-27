@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from .models import Product
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth  import authenticate,  login, logout
+from django.contrib.auth import authenticate,  login, logout
 from django.db import IntegrityError
 import json
 # Create your views here.
@@ -102,6 +102,9 @@ def handeLogin(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            name = request.session['customer'] = user.id
+            email = request.session['email'] = user.email
+            print(name, email)
             return redirect("/")
         else:
             messages.error(request, "Invalid credentials! Please try again")
@@ -143,6 +146,7 @@ def managecart(request):
 
 def cart(request):
     total = 0
+    request.session.get('cart')
     if 'cart' in request.session:
         for p_id, item in request.session['cart'].items():
             total += int(item['qty']) * float(item['price'])
@@ -186,7 +190,11 @@ def update_items(request):
 
 
 def checkout(request):
-    total = 0
-    for p_id, item in request.session['cart'].items():
-        total += int(item['qty']) * float(item['price'])
-    return render(request, 'shop/checkout.html', {'total': total})
+    if request.user.is_authenticated:
+        total = 0
+        for p_id, item in request.session['cart'].items():
+            total += int(item['qty']) * float(item['price'])
+        return render(request, 'shop/checkout.html', {'total': total})
+    else:
+        messages.error(request, "Login required to place order")
+        return redirect("/login")

@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 
-from .models import Product
+from .models import Product, Cartorder, CartOrderitems
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,  login, logout
@@ -102,9 +102,6 @@ def handeLogin(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            name = request.session['customer'] = user.id
-            email = request.session['email'] = user.email
-            print(name, email)
             return redirect("/")
         else:
             messages.error(request, "Invalid credentials! Please try again")
@@ -194,6 +191,17 @@ def checkout(request):
         total = 0
         for p_id, item in request.session['cart'].items():
             total += int(item['qty']) * float(item['price'])
+        order = Cartorder.objects.create(
+            user=request.user,
+            total_amt=total
+        )
+        for p_id, item in request.session['cart'].items():
+            total += int(item['qty']) * float(item['price'])
+            items = CartOrderitems.objects.create(
+                order=order,
+                invoice_no='INV_'+str(order.id),
+                item=item[]
+            )
         return render(request, 'shop/checkout.html', {'total': total})
     else:
         messages.error(request, "Login required to place order")

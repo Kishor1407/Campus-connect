@@ -20,11 +20,6 @@ class Product(models.Model):
         return self.product_name
 
 
-
-class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    total_amt = models.FloatField()
-    item = models.CharField(max_length=150)
 class Cartorder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total_amt = models.FloatField()

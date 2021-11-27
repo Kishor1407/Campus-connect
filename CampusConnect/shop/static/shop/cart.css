@@ -14,7 +14,7 @@
   font-size: 30px;
   font-weight: 500;
   margin: 20px 0;
-  text-transform: capitalizes;
+  text-transform: capitalize;
 }
 .cart{
   width: 100%;
@@ -43,10 +43,11 @@
   border-radius: 5px;
 }
 .sn-text {
+
   width: 50%;
 }
 .sn-product-name {
-  font: size 25px;
+  font-size:15px;
   font-weight: 700;
   text-transform: capitalize;
 }
@@ -103,10 +104,9 @@
 .sn-delete-btn img {
   height: 15px;
 }
-.empty-img {
-  width: 50%;
-  display: block;
-  margin: auto;
+img:last-child {
+  object-fit:contain;
+  align-items:center;
 }
 .checkout-box {
   width: 100%;
@@ -134,8 +134,42 @@
   text-decoration: none;
   text-transform: capitalize;
 }
+.section-heading{
+text-transform:capitalize;
+font-weight:700;
+}
 .bill{
   font-size: 60px;
   font-weight: 500;
   margin: 10px 0;
+}
+@media only screen and (max-width:750px){
+img:last-child{
+width:inherit;
+object-fit:cover;
+}
+.cart-section{
+ display:flex;
+ flex-direction:column;
+}
+.checkout-section{
+ margin-top:5px;
+ width:52%;
+}
+.cart{
+padding:9px;}
+
+.product-list{
+width:100%;
+}
+.sn-product-img{
+width:95px;
+}
+.sn-text
+{
+text-align:center;
+}
+.sn-price{
+font-size:30px;
+}
 }

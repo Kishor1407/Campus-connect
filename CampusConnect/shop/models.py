@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -19,19 +21,24 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
+class Address(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    Hostel_name = models.CharField(max_length=500)
+    Unit = models.CharField(max_length=4)
+    City = models.CharField(max_length=15)
+    pincode = models.IntegerField()
+    landmark = models.CharField(max_length=50)
 
-class Cartorder(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    total_amt = models.FloatField()
-    paid_status = models.BooleanField(default=False)
-    order_date = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.Hostel_name
 
 
-class CartOrderitems(models.Model):
-    order = models.ForeignKey(Cartorder, on_delete=models.CASCADE)
-    invoice_no = models.CharField(max_length=150)
-    item = models.CharField(max_length=150)
-    image = models.CharField(max_length=300)
-    qty = models.IntegerField()
-    price = models.FloatField()
+class Order(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    items = models.CharField(max_length=500, default='none')
+    size = models.CharField(max_length=10, default='S')
+    qty = models.IntegerField(default=0)
     total = models.FloatField()
+
+    def __str__(self):
+        return self.items

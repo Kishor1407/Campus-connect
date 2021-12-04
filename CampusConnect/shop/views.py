@@ -1,8 +1,10 @@
+import datetime
+
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 
-from .models import Product, Cartorder, CartOrderitems
+from .models import Product, Order, Address
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,  login, logout
@@ -111,6 +113,11 @@ def handeLogin(request):
 
 
 def handelLogout(request):
+    total = 0
+    request.session.get('cart')
+    if 'cart' in request.session:
+        for p_id, item in request.session['cart'].items():
+            total += int(item['qty']) * float(item['price'])
     logout(request)
     return redirect('/')
 
@@ -189,20 +196,34 @@ def update_items(request):
 def checkout(request):
     if request.user.is_authenticated:
         total = 0
-        for p_id, item in request.session['cart'].items():
-            total += int(item['qty']) * float(item['price'])
-        order = Cartorder.objects.create(
-            user=request.user,
-            total_amt=total
-        )
-        for p_id, item in request.session['cart'].items():
-            total += int(item['qty']) * float(item['price'])
-            items = CartOrderitems.objects.create(
-                order=order,
-                invoice_no='INV_'+str(order.id),
-                item=item[]
-            )
-        return render(request, 'shop/checkout.html', {'total': total})
+        request.session.get('cart')
+        if 'cart' in request.session:
+            for p_id, item in request.session['cart'].items():
+                total += int(item['qty']) * float(item['price'])
+                order = Order(
+                    user=request.user,
+                    items=item['name'],
+                    size=item['size'],
+                    qty=item['qty'],
+                    total=total,
+                )
+                order.save()
+                if request.method == "POST":
+                    address = Address(
+                        user=request.user,
+                        Hostel_name=request.POST.get('address', ''),
+                        Unit = request.POST.get('unit', ''),
+                        City = request.POST.get('city', ''),
+                        pincode = request.POST.get('pincode', ''),
+                        landmark = request.POST.get('landmark', ''),
+                    )
+                    address.save()
+                    return render(request, 'shop/checkout.html')
+            return render(request, 'shop/checkout.html', {'data': request.session['cart'], 'total': total})
+        else:
+            return render(request, 'shop/checkout.html')
     else:
         messages.error(request, "Login required to place order")
         return redirect("/login")
+
+

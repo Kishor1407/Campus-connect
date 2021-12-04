@@ -1,9 +1,10 @@
 from django.contrib import admin
 
 # Register your models here.
-from.models import Product
-from.models import Cartorder
-from.models import CartOrderitems
+from.models import Product, Order, Address
 admin.site.register(Product)
-admin.site.regiser(Cartorder)
-admin.site.regiser(CartOrderitems)
+admin.site.register(Address)
+admin.site.register(Order)
+
+
+

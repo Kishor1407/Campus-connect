@@ -1,4 +1,7 @@
+import datetime
+
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -17,3 +20,25 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+class Address(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    Hostel_name = models.CharField(max_length=500)
+    Unit = models.CharField(max_length=4)
+    City = models.CharField(max_length=15)
+    pincode = models.IntegerField()
+    landmark = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.Hostel_name
+
+
+class Order(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    items = models.CharField(max_length=500, default='none')
+    size = models.CharField(max_length=10, default='S')
+    qty = models.IntegerField(default=0)
+    price = models.FloatField()
+
+    def __str__(self):
+        return self.items

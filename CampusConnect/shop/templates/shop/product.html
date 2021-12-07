@@ -99,7 +99,6 @@
            <label for="{{i}}size" class="size-radio-btn" >{{i}}</label>
           {% endfor %}
           <button  id="{{product.id}}" class="btn cart-btn cart">add to cart</button>
-          <button class="btn">buy</button>
 
         </div>
       </div>
@@ -279,7 +278,6 @@ name=document.getElementById('name').innerHTML;
 price=document.getElementById('price').innerHTML;
 var size=$('.check').text();
 image = "/media/{{product.images}}";
-console.log(id, qty, name, price, size, image);
 $.ajax({
     url:'/managecart',
     data:{

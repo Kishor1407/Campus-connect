@@ -56,19 +56,20 @@
       <img src="./img/error.png" alt="" class="alert-img"> 
       <p class="alert-msg"></p>
     </div>
-
+    <form method="post" action="/checkout/">{% csrf_token %}
     <div class="form">
       <h1 class="heading">Checkout</h1>
       <p class="text">Delivery Address</p>
-      <input type="text" id="address" placeholder="Hostel name" />
-      <input type="text" id="street" placeholder="Unit" />
+      <input type="text" id="address" name="address" placeholder="Hostel name" />
+      <input type="text" id="street" name="unit" placeholder="Unit" />
       <div class="three-input-container">
-        <input type="text" id="city" placeholder="city" />
-        <input type="text" id="state" placeholder="state" />
-        <input type="text" id="pincode" placeholder="pin code" />
+        <input type="text" id="city" name="city" placeholder="city" />
+        <input type="text" id="state" name="state" placeholder="state" />
+        <input type="text" id="pincode"  name="pincode" placeholder="pin code" />
       </div>
-      <input type="text" id="landmark" placeholder="landmark" />
+      <input type="text" id="landmark" name="landmark" placeholder="landmark" />
     </div>
+
 
     <div class="cart-section">
       <!-- <div class="product-list">
@@ -78,11 +79,13 @@
       <div class="checkout-section">
         <div class="checkout-box">
           <p class="text">your total bill</p>
-          <h1 class="bill">{{total}}/-</h1>
+          <input type="hidden" name="total" id="total" value="{{total}}">
+          <h1 class="bill" >{{total}}/-</h1>
          <button class="place-order-btn">Place order</button>
         </div>
       </div>
     </div>
+      </form>
 
     <footer class="footer"></footer>
 

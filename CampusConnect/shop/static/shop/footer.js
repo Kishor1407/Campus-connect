@@ -2,7 +2,7 @@ const createFooter = () => {
   const footer = document.querySelector("footer");
   footer.innerHTML = `      <div class="footer-content">
         <img
-          src="https://images-na.ssl-images-amazon.com/images/I/71o1kVoV-+L._AC_UL160_SR160,160_.jpg"
+          src="{%static 'shop/campusconnectlogo.jpg' %}"
           alt="img"
           class="site-logo"
         />
@@ -27,12 +27,7 @@ const createFooter = () => {
         quo deserunt assumenda alias ducimus. Ullam odit maxime id voluptates
         rerum tenetur corporis laboriosam! Cum error ipsum laborum tempore in
         rerum necessitatibus nostrum nobis modi! Debitis adipisci illum nemo
-        aperiam sed, et accusamus ut officiis. Laborum illo exercitationem quo
-        culpa reprehenderit excepturi distinctio tempore cupiditate praesentium
-        nisi ut iusto, assumenda perferendis facilis voluptas autem fuga sunt ab
-        debitis voluptatum harum eum. Asperiores, natus! Est deserunt incidunt
-        quasi placeat omnis, itaque harum?
-      </p>
+
       <p class="info">
         support emails - help@clothing.com, customersupport@clothing.com
       </p>

@@ -2,7 +2,7 @@ const createFooter = () => {
   const footer = document.querySelector("footer");
   footer.innerHTML = `      <div class="footer-content">
         <img
-          src="https://images-na.ssl-images-amazon.com/images/I/71o1kVoV-+L._AC_UL160_SR160,160_.jpg"
+          src="{%static 'shop/campusconnectlogo.jpg' %}"
           alt="img"
           class="site-logo"
         />

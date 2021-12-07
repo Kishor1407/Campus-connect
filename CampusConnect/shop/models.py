@@ -38,7 +38,7 @@ class Order(models.Model):
     items = models.CharField(max_length=500, default='none')
     size = models.CharField(max_length=10, default='S')
     qty = models.IntegerField(default=0)
-    total = models.FloatField()
+    price = models.FloatField()
 
     def __str__(self):
         return self.items

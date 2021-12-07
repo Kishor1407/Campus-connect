@@ -1,15 +1,15 @@
-import datetime
-
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
-
 from .models import Product, Order, Address
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,  login, logout
 from django.db import IntegrityError
+from django.views.decorators.csrf import csrf_exempt
+from .PayTm import Checksum
 import json
+MERCHANT_KEY = 'J0h@C_Ac6ZhL%JiC'
 # Create your views here.
 
 
@@ -205,7 +205,7 @@ def checkout(request):
                     items=item['name'],
                     size=item['size'],
                     qty=item['qty'],
-                    total=total,
+                    price=float(item['price'])*int(item['qty'])
                 )
                 order.save()
                 if request.method == "POST":
@@ -218,7 +218,20 @@ def checkout(request):
                         landmark = request.POST.get('landmark', ''),
                     )
                     address.save()
-                    return render(request, 'shop/checkout.html')
+                    param_dict = {
+
+                        'MID': 'iKBIyO36141253697713',
+                        'ORDER_ID': str(order.id),
+                        'TXN_AMOUNT': str(total),
+                        'CUST_ID': 'kartik',
+                        'INDUSTRY_TYPE_ID': 'Retail',
+                        'WEBSITE': 'WEBSTAGING',
+                        'CHANNEL_ID': 'WEB',
+                        'CALLBACK_URL': 'http://127.0.0.1:8000/handlerequest/',
+
+                    }
+                    param_dict['CHECKSUMHASH']=Checksum.generateSignature(param_dict, MERCHANT_KEY)
+                    return render(request, 'shop/paytm.html', {'param_dict': param_dict})
             return render(request, 'shop/checkout.html', {'data': request.session['cart'], 'total': total})
         else:
             return render(request, 'shop/checkout.html')
@@ -227,3 +240,20 @@ def checkout(request):
         return redirect("/login")
 
 
+@csrf_exempt
+def handlerequest(request):
+    # paytm will send you post request here
+    form = request.POST
+    response_dict = {}
+    for i in form.keys():
+        response_dict[i] = form[i]
+        if i == 'CHECKSUMHASH':
+            checksum = form[i]
+
+    verify = Checksum .verifySignature(response_dict, MERCHANT_KEY, checksum)
+    if verify:
+        if response_dict['RESPCODE'] == '01':
+            print('order successful')
+        else:
+            print('order was not successful because' + response_dict['RESPMSG'])
+    return render(request, 'shop/mail.html', {'response': response_dict})

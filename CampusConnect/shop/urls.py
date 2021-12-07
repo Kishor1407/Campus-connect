@@ -18,5 +18,6 @@ urlpatterns = [
     path('delete-from-cart/', views.delete_items, name="delete_items"),
     path('update-cart/', views.update_items, name="update_items"),
     path('checkout/', views.checkout, name="checkout"),
+    path('handlerequest/', views.handlerequest, name="handlerequest"),
 
 ]

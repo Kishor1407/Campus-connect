@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
+import requests
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from .models import Product, Order, Address
@@ -7,7 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,  login, logout
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
-from .PayTm import Checksum
+from paytmchecksum import PaytmChecksum
+import random
 import json
 MERCHANT_KEY = 'J0h@C_Ac6ZhL%JiC'
 # Create your views here.
@@ -218,20 +220,46 @@ def checkout(request):
                         landmark = request.POST.get('landmark', ''),
                     )
                     address.save()
-                    param_dict = {
+                    order_id = "ORDERNO_"+str(random.randint(1,500))
+                    paytmParams = dict()
 
-                        'MID': 'iKBIyO36141253697713',
-                        'ORDER_ID': str(order.id),
-                        'TXN_AMOUNT': str(total),
-                        'CUST_ID': 'kartik',
-                        'INDUSTRY_TYPE_ID': 'Retail',
-                        'WEBSITE': 'WEBSTAGING',
-                        'CHANNEL_ID': 'WEB',
-                        'CALLBACK_URL': 'http://127.0.0.1:8000/handlerequest/',
-
+                    paytmParams["body"] = {
+                        "requestType": "Payment",
+                        "mid": "iKBIyO36141253697713",
+                        "websiteName": "WEBSTAGING",
+                        "orderId": order_id,
+                        "callbackUrl": "http://127.0.0.1:8000/handlerequest/",
+                        "txnAmount": {
+                            "value": str(total),
+                            "currency": "INR",
+                        },
+                        "userInfo": {
+                            "custId": str(request.user.email),
+                        },
                     }
-                    param_dict['CHECKSUMHASH']=Checksum.generateSignature(param_dict, MERCHANT_KEY)
-                    return render(request, 'shop/paytm.html', {'param_dict': param_dict})
+
+                    checksum = PaytmChecksum.generateSignature(json.dumps(paytmParams["body"]), MERCHANT_KEY)
+
+                    paytmParams["head"] = {
+                        "signature": checksum
+                    }
+
+                    post_data = json.dumps(paytmParams)
+
+                    # for Staging
+                    url = f'https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=iKBIyO36141253697713&orderId={order_id}'
+
+                    # for Production
+                    # url = "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=YOUR_MID_HERE&orderId=ORDERID_98765"
+                    response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
+
+                    payment_page = {
+                        'mid': 'iKBIyO36141253697713',
+                        'txnToken': response['body']['txnToken'],
+                        'orderId': paytmParams['body']['orderId'],
+                    }
+
+                    return render(request, 'shop/paytm.html', {'data': payment_page})
             return render(request, 'shop/checkout.html', {'data': request.session['cart'], 'total': total})
         else:
             return render(request, 'shop/checkout.html')
@@ -242,7 +270,6 @@ def checkout(request):
 
 @csrf_exempt
 def handlerequest(request):
-    # paytm will send you post request here
     form = request.POST
     response_dict = {}
     for i in form.keys():
@@ -250,7 +277,7 @@ def handlerequest(request):
         if i == 'CHECKSUMHASH':
             checksum = form[i]
 
-    verify = Checksum .verifySignature(response_dict, MERCHANT_KEY, checksum)
+    verify = PaytmChecksum.verifySignature(response_dict, MERCHANT_KEY, checksum)
     if verify:
         if response_dict['RESPCODE'] == '01':
             print('order successful')

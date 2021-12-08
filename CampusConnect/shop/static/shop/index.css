@@ -236,6 +236,7 @@ footer {
   padding: 40px 0.1vw;
 }
 .footer-content {
+
   display: flex;
   justify-content: space-between;
   width: 100%;

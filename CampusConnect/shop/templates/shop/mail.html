@@ -43,9 +43,17 @@
   <body>
     <div>
       <h1 class="heading">
-        dear user, <span>your order has been placed succesfully</span>
+        dear {{request.user}},
+        {% if response.RESPCODE == '00' %}
+        <span>your order has been placed succesfully</span>
+        your order id is {{response.ORDERID}}
+        your transaction id is {{TXNID}}
+        {% else %}
+        <span>your order has failed</span>
+        try again....
+        {% endif %}
       </h1>
-      <button class="btn">Check status</button>
+      <a href="/" ><button class="btn">Home</button></a>
     </div>
   </body>
 </html>

@@ -202,6 +202,7 @@ def checkout(request):
         if 'cart' in request.session:
             for p_id, item in request.session['cart'].items():
                 total += int(item['qty']) * float(item['price'])
+                global order
                 order = Order(
                     user=request.user,
                     items=item['name'],
@@ -209,8 +210,9 @@ def checkout(request):
                     qty=item['qty'],
                     price=float(item['price'])*int(item['qty'])
                 )
-                order.save()
+
                 if request.method == "POST":
+                    global address
                     address = Address(
                         user=request.user,
                         Hostel_name=request.POST.get('address', ''),
@@ -219,7 +221,6 @@ def checkout(request):
                         pincode = request.POST.get('pincode', ''),
                         landmark = request.POST.get('landmark', ''),
                     )
-                    address.save()
                     order_id = "ORDERNO_"+str(random.randint(1,500))
                     paytmParams = dict()
 
@@ -272,6 +273,14 @@ def checkout(request):
 def handlerequest(request):
     form = request.POST
     response_dict = {}
+    status={
+    'order_id': request.POST.get('ORDERID'),
+    'payment_mode':request.POST.get('PAYMENTMODE'),
+    'transaction_id':request.POST.get('TXNID'),
+    'Bank_transaction_id':request.POST.get('BANKTXNID'),
+    'transaction_date':request.POST.get('TXNDATE'),
+    'res_msg':request.POST.get('RESMSG')
+    }
     for i in form.keys():
         response_dict[i] = form[i]
         if i == 'CHECKSUMHASH':
@@ -279,8 +288,7 @@ def handlerequest(request):
 
     verify = PaytmChecksum.verifySignature(response_dict, MERCHANT_KEY, checksum)
     if verify:
-        if response_dict['RESPCODE'] == '01':
-            print('order successful')
-        else:
-            print('order was not successful because' + response_dict['RESPMSG'])
-    return render(request, 'shop/mail.html', {'response': response_dict})
+        if response_dict['RESPCODE']==00:
+            order.save()
+            address.save()
+    return render(request, 'shop/mail.html', {'response':response_dict})

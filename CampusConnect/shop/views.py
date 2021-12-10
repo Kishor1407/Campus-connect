@@ -5,13 +5,18 @@ from django.template.loader import render_to_string
 from .models import Product, Order, Address
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate,  login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.views.decorators.csrf import csrf_exempt
 from paytmchecksum import PaytmChecksum
 import random
 import json
+from importlib import import_module
+from django.conf import settings
+
 MERCHANT_KEY = 'J0h@C_Ac6ZhL%JiC'
+
+
 # Create your views here.
 
 
@@ -77,7 +82,6 @@ def handelsignup(request):
             messages.error(request, "e-mail already registered, please use a different id")
             return redirect('/Signup')
 
-
         try:
             user = User.objects.create_user(username, email, password)
         except IntegrityError:
@@ -125,6 +129,9 @@ def handelLogout(request):
 
 
 def managecart(request):
+    global key
+    key = request.session.session_key
+    print(key)
     cartdata = {}
     cartdata[str(request.GET['id'])] = {
         'id': request.GET['id'],
@@ -202,65 +209,61 @@ def checkout(request):
         if 'cart' in request.session:
             for p_id, item in request.session['cart'].items():
                 total += int(item['qty']) * float(item['price'])
-                global order
-                order = Order(
+            if request.method == "POST":
+                global address
+                address = Address(
                     user=request.user,
-                    items=item['name'],
-                    size=item['size'],
-                    qty=item['qty'],
-                    price=float(item['price'])*int(item['qty'])
+                    Hostel_name=request.POST.get('address', ''),
+                    Unit=request.POST.get('unit', ''),
+                    City=request.POST.get('city', ''),
+                    pincode=request.POST.get('pincode', ''),
+                    landmark=request.POST.get('landmark', ''),
                 )
+                order_id = "ORDERNO_" + str(random.randint(1,10000))
+                paytmParams = dict()
 
-                if request.method == "POST":
-                    global address
-                    address = Address(
-                        user=request.user,
-                        Hostel_name=request.POST.get('address', ''),
-                        Unit = request.POST.get('unit', ''),
-                        City = request.POST.get('city', ''),
-                        pincode = request.POST.get('pincode', ''),
-                        landmark = request.POST.get('landmark', ''),
-                    )
-                    order_id = "ORDERNO_"+str(random.randint(1,500))
-                    paytmParams = dict()
+                paytmParams["body"] = {
+                    "requestType": "Payment",
+                    "mid": "iKBIyO36141253697713",
+                    "websiteName": "WEBSTAGING",
+                    "orderId": order_id,
+                    "callbackUrl": "http://127.0.0.1:8000/handlerequest/",
+                    "txnAmount": {
+                        "value": str(total),
+                        "currency": "INR",
+                    },
+                    "userInfo": {
+                        "custId": str(request.user),
 
-                    paytmParams["body"] = {
-                        "requestType": "Payment",
-                        "mid": "iKBIyO36141253697713",
-                        "websiteName": "WEBSTAGING",
-                        "orderId": order_id,
-                        "callbackUrl": "http://127.0.0.1:8000/handlerequest/",
-                        "txnAmount": {
-                            "value": str(total),
-                            "currency": "INR",
-                        },
-                        "userInfo": {
-                            "custId": str(request.user.email),
-                        },
-                    }
+                    },
+                    "extendInfo":{
+                        "session_key":request.session.session_key
+                    },
+                }
 
-                    checksum = PaytmChecksum.generateSignature(json.dumps(paytmParams["body"]), MERCHANT_KEY)
+                checksum = PaytmChecksum.generateSignature(json.dumps(paytmParams["body"]), MERCHANT_KEY)
 
-                    paytmParams["head"] = {
-                        "signature": checksum
-                    }
+                paytmParams["head"] = {
+                    "signature": checksum
+                }
 
-                    post_data = json.dumps(paytmParams)
+                post_data = json.dumps(paytmParams)
 
-                    # for Staging
-                    url = f'https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=iKBIyO36141253697713&orderId={order_id}'
+                # for Staging
+                url = f'https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=iKBIyO36141253697713&orderId={order_id}'
 
-                    # for Production
-                    # url = "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=YOUR_MID_HERE&orderId=ORDERID_98765"
-                    response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
+                # for Production
+                # url = "https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=YOUR_MID_HERE&orderId=ORDERID_98765"
+                response = requests.post(url, data=post_data, headers={"Content-type": "application/json"}).json()
 
-                    payment_page = {
-                        'mid': 'iKBIyO36141253697713',
-                        'txnToken': response['body']['txnToken'],
-                        'orderId': paytmParams['body']['orderId'],
-                    }
+                payment_page = {
+                    'mid': 'iKBIyO36141253697713',
+                    'txnToken': response['body']['txnToken'],
+                    'orderId': paytmParams['body']['orderId'],
+                }
 
-                    return render(request, 'shop/paytm.html', {'data': payment_page})
+                return render(request, 'shop/paytm.html', {'data': payment_page})
+            print(total)
             return render(request, 'shop/checkout.html', {'data': request.session['cart'], 'total': total})
         else:
             return render(request, 'shop/checkout.html')
@@ -271,24 +274,44 @@ def checkout(request):
 
 @csrf_exempt
 def handlerequest(request):
+    engine = import_module(settings.SESSION_ENGINE)
     form = request.POST
     response_dict = {}
+    global status
     status={
-    'order_id': request.POST.get('ORDERID'),
-    'payment_mode':request.POST.get('PAYMENTMODE'),
-    'transaction_id':request.POST.get('TXNID'),
-    'Bank_transaction_id':request.POST.get('BANKTXNID'),
-    'transaction_date':request.POST.get('TXNDATE'),
-    'res_msg':request.POST.get('RESMSG')
+        "order_id" :request.POST.get('ORDERID'),
+        "payment_mode ":request.POST.get('PAYMENTMODE'),
+        "transaction_id" :request.POST.get('TXNID'),
+        "Bank_transaction_id ": request.POST.get('BANKTXNID'),
+        "transaction_date" : request.POST.get('TXNDATE'),
+        "res_msg" : request.POST.get('RESPMSG'),
     }
+
     for i in form.keys():
         response_dict[i] = form[i]
         if i == 'CHECKSUMHASH':
             checksum = form[i]
-
     verify = PaytmChecksum.verifySignature(response_dict, MERCHANT_KEY, checksum)
     if verify:
-        if response_dict['RESPCODE']==00:
-            order.save()
+        if response_dict['RESPCODE'] == '01':
             address.save()
-    return render(request, 'shop/mail.html', {'response':response_dict})
+            return redirect('/success')
+        else:
+             return render(request, 'shop/fail.html')
+
+
+def success(request):
+    print(request.user)
+    for p_id, item in request.session['cart'].items():
+        global order
+        order = Order(
+            user=request.user,
+            items=item['name'],
+            size=item['size'],
+            qty=item['qty'],
+            price=float(item['price']) * int(item['qty'])
+        )
+        order.save()
+    del request.session['cart']
+    status_details=status
+    return render(request,'shop/success.html',{'response':status_details})

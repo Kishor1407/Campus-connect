@@ -25,40 +25,32 @@ body{
     justify-content: space-between;
     align-items: center;
     padding: 0 5vw;
-    background: #fff;
+    background: #000;
     z-index: 9;
 }
+
 
 .links-container{
     display: flex;
     list-style: none;
 }
 
+
 .link{
     padding: 10px;
     margin-left: 10px;
     text-decoration: none;
     text-transform: capitalize;
-    color: #000;
+    color: #fff;
 }
 
-.header{
-    margin-top: 60px;
-    width: 100%;
-    height: calc(100vh - 60px);
-    background: url(../img/header.png);
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .content{
     text-align: center;
 }
 
 .heading{
-    color: #fff;
+    color: #000;
     text-transform: capitalize;
     font-size: 80px;
     line-height: 60px;
@@ -73,7 +65,7 @@ body{
 .heading .no-fill{
     font-style: italic;
     color: transparent;
-    -webkit-text-stroke: 2px #fff;
+    -webkit-text-stroke: 2px #000;
 }
 
 .btn{
@@ -86,6 +78,7 @@ body{
 }
 
 .blogs-section{
+    word-break: break-word;
     width: 100%;
     padding: 50px 5vw;
     display: grid;

@@ -1,0 +1,4 @@
+cryptodome
+paytm
+paytmchecksum
+pillow

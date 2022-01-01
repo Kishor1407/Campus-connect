@@ -15,6 +15,7 @@
 
 <body>
     <form action="/blogs/editor" method="post" enctype="multipart/form-data">
+        {{form.media}}
         {% csrf_token %}
         <div class="banner">
             <input hidden type='file' name='banner' id="banner-upload">
@@ -27,13 +28,11 @@
         </div>
         <div class="blog-options">
             <button class="btn dark publish-btn">publish</button>
-            <input type="file" accept="image/*" id="image-upload" name ="blogimage" hidden>
-            <label for="image-upload" class="btn grey upload-btn">Upload Image</label>
         </div>
     </form>
 
     <script type="text/javascript" src="{%static 'blog/editor.js' %}"></script>
-
+    
 </body>
 
 </html>

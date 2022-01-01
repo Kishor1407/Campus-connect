@@ -25,7 +25,7 @@
   <nav class="navbar">
     <a href="/" class="logo">CampusConnect</a>
     <ul class="links-container">
-      <li class="link-item"><a href="/" class="link">home</a></li>
+      <li class="link-item"><a href="/blogs" class="link">home</a></li>
       <li class="link-item"><a href="/logout" class="link">logout</a></li>
     </ul>
   </nav>
@@ -37,12 +37,13 @@
   <section class="blogs-section">
     {% for i in post %}
     <div class="blog-card">
+      {{post.body|safe}}
       <img src="/media/{{i.Banner_image}}" class="blog-image" alt="">
       <h1 class="blog-title">{{i.title}}</h1>
       <p class="blog-overview">{{i.content| truncatechars:500}}</p>
       <a href="/blogs/blog/{{i.post_id}}" class="btn dark">read</a>
       <a href="/blogs/editor/{{i.post_id}}" class="btn grey">edit</a>
-      <a href="/" class="btn danger">delete</a>
+      <a href="/blogs/delete/{{i.post_id}}" class="btn danger">delete</a>
     </div>
     {% endfor %}
   </section>

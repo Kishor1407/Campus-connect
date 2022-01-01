@@ -59,6 +59,7 @@ a.logo{
     <section class="blogs-section">
         {% for i in blog %}
          <div class="blog-card">
+            {{post.body|safe}}
             <img src="/media/{{i.Banner_image}}" class="blog-image" alt="">
             <h1 class="blog-title">{{i.title}}</h1>
             <p class="blog-overview"> {{i.content| truncatechars:100}}</p>

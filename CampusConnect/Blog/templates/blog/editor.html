@@ -14,16 +14,17 @@
 </head>
 
 <body>
-    <form action="/blogs/editor" method="post" enctype="multipart/form-data">
+    <form action="/blogs/editor/{{post.post_id}}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="banner">
-            <input hidden type='file' name='banner' id="banner-upload">
+        <div class="banner"><img src="/media/{{post.Banner_image}}" class="banner">
+            <input hidden type='file' name='banner' id="banner-upload" >
             <label for="banner-upload" class="banner-upload-btn"><img src="{%static 'blog/upload.png' %}"
                     alt="upload banner"></label>
         </div>
         <div class="blog">
-            <input type="text" class="title" name="title" placeholder="Blog title..."></input>
-            <input type="text" class="article" name="content" placeholder="Start writing here..."></input>
+            {{post.body|safe}}
+            <input type="text" class="title" name="title" value="{{post.title}}"></input>
+            <input type="text" class="article" name="content" value="{{post.content}}"></input>
         </div>
         <div class="blog-options">
             <button class="btn dark publish-btn">publish</button>

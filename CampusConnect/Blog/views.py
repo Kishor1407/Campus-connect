@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .models import Blogpost
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 import datetime
+from django.contrib import messages
 
 
 def home(request):
@@ -12,35 +13,39 @@ def home(request):
 
 def editor(request,id):
     post = Blogpost.objects.filter(post_id=id)[0]
+    print(post.content)
     if request.method == "POST":
         title = request.POST.get("title")
         content = request.POST.get("content")
-        image = request.FILES.get("banner")
-        blog =Blogpost(
-            user=request.user,
-            title=title,
-            content=content,
-            pub_date=datetime.datetime.now(),
-            Banner_image=image,
-        )
-        blog.save()
+        if request.FILES.get("banner"):
+            image = request.FILES.get("banner")
+            post.Banner_image=image
+        post.title=title
+        post.content=content
+        post.pub_date=datetime.datetime.now()
+        print(post.title)
+        post.save()
+        return redirect("/blog/dashboard")
     return render(request, 'blog/editor.html',{"post":post})
 
 def write(request):
-    if request.method == "POST":
-        title = request.POST.get("title")
-        content = request.POST.get("content")
-        image = request.FILES.get("banner")
-        blog =Blogpost(
-            user=request.user,
-            title=title,
-            content=content,
-            pub_date=datetime.datetime.now(),
-            Banner_image=image,
-        )
-        blog.save()
-    return render(request, 'blog/write.html')
-
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            title = request.POST.get("title")
+            content = request.POST.get("content")
+            image = request.FILES.get("banner")
+            blog =Blogpost(
+                user=request.user,
+                title=title,
+                content=content,
+                pub_date=datetime.datetime.now(),
+                Banner_image=image,
+            )
+            blog.save()
+        return render(request, 'blog/write.html')
+    else:
+        messages.error(request, "Login to continue")
+        return redirect("/login")
 
 def blog(request, id):
     post = Blogpost.objects.filter(post_id=id)[0]
@@ -57,3 +62,9 @@ def dashboard(request):
         return render(request, 'blog/dashboard.html',{"post":post})
     else:
         return HttpResponse("404-page not found")
+
+
+def delete(request,id):
+    post = Blogpost.objects.filter(post_id=id)[0]
+    post.delete()
+    return redirect("/blogs/dashboard")

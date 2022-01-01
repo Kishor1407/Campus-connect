@@ -26,7 +26,6 @@
             <a href="/" class="logo">CampusConnect</a>
         <ul class="links-container">
             <li class="link-item"><a href="/blogs" class="link">home</a></li>
-            <li class="link-item"><a href="/blogs/editor" class="link">editor</a></li>
             {% if user.is_authenticated %}
             <li class="link-item"><a href="/blogs/dashboard" class="link">Dashboard</a></li>
             <li class="link-item"><a href="/logout" class="link">Logout</a></li>
@@ -40,6 +39,7 @@
     </div>
 
     <div class="blog">
+        {{post.body|safe}}
         <h1 class="title">{{post.title}}</h1>
         <p class="published"><span>published at - {{post.pub_date}}             written by:- {{post.user}}</span></p>
         <a href="" class="btn" id="edit-blog-btn">Edit blog</a>

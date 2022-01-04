@@ -40,7 +40,8 @@
       {{post.body|safe}}
       <img src="/media/{{i.Banner_image}}" class="blog-image" alt="">
       <h1 class="blog-title">{{i.title}}</h1>
-      <p class="blog-overview">{{i.content| truncatechars:500}}</p>
+      <p class="blog-overview">{{i.content|safe| truncatechars:600}}</p>
+      <br></br>
       <a href="/blogs/blog/{{i.post_id}}" class="btn dark">read</a>
       <a href="/blogs/editor/{{i.post_id}}" class="btn grey">edit</a>
       <a href="/blogs/delete/{{i.post_id}}" class="btn danger">delete</a>

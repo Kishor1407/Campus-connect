@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link rel="icon" type="image/x-icon" href="{%static 'shop/favicon.ico' %}">
 <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{%static 'shop/index.css' %}"  />
     <style>
@@ -40,6 +41,14 @@
     top:25rem;
     left:10rem;
   }
+  .container{
+    grid-template-rows: calc(100vh - 75px) auto auto;
+  }
+  .container .title{
+    content :url("{%static 'shop/logomobile.jpg' %}");
+     height: 100%;
+     width: 100%;
+  }
 }</style>
     <script
       src="https://kit.fontawesome.com/a60ca36cd5.js"
@@ -54,7 +63,7 @@
     <!-- -------------------Hero Section------------------ -->
     <div class="container grid">
       <div class="header">
-        <div class="title"><img src="{%static 'shop/homepage.jpg' %}"></div>
+        <div class="title"><img src="{%static 'shop/backgroundlogo.jpeg' %}"></div>
       </div>
       <div class="choices">
         <div class="card">

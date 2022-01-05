@@ -4,46 +4,60 @@
     {% load static %}
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{%static 'shop/favicon.ico' %}"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" href="{%static 'shop/index.css' %}"  />
-    <link rel="stylesheet" type="text/css" href="{%static 'shop/aboutUs .css' %}"  />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{%static 'shop/index.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{%static 'shop/aboutUs .css' %}"
+    />
     <script
       src="https://kit.fontawesome.com/a60ca36cd5.js"
       crossorigin="anonymous"
     ></script>
-       <style>.login-logout-popup{
-  position: absolute;
-  left: 89%;
-  transform: translateX(-50%);
-  padding: 10px;
-  background: #fff;
-  border-radius: 10px;
-  top: 5rem;
-  width: 160px;
-  transition: 0.5s;
-  border: 2px solid #f5f5f5;
-  z-index: 9;
-}
-.login-logout-popup::after{
-  content: '';
-  position: absolute;
-  top: -7.5px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  width: 15px;
-  height: 15px;
-  background: #fff;
-  border-radius: 5px;
-}
-@media only screen and (max-width:750px)
-{
-  .login-logout-popup{
-    top:25rem;
-    left:10rem;
-  }
-}</style>
+    <style>
+      .login-logout-popup {
+        position: absolute;
+        left: 89%;
+        transform: translateX(-50%);
+        padding: 10px;
+        background: #fff;
+        border-radius: 10px;
+        top: 5rem;
+        width: 160px;
+        transition: 0.5s;
+        border: 2px solid #f5f5f5;
+        z-index: 9;
+      }
+      .login-logout-popup::after {
+        content: "";
+        position: absolute;
+        top: -7.5px;
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+        width: 15px;
+        height: 15px;
+        background: #fff;
+        border-radius: 5px;
+      }
+      @media only screen and (max-width: 750px) {
+        .login-logout-popup {
+          top: 25rem;
+          left: 10rem;
+        }
+      }
+    </style>
     <title>CampusConnect : About Us</title>
-
   </head>
   <body>
     <nav class="nav" id="toggle-collapse"></nav>
@@ -55,10 +69,10 @@
             <h4 class="card-info">Aryan Singh</h4>
             <p>
               Hi, I am Aryan Singh, co-developer of CampusConnect. I am a
-              sophomore at SMVIT ,Bangalore presently pursuing my B.E. in Electronics and
-              Communication Engineering. I am into the field of full stack web
-              development and keenly interested in the fields of cloud and
-              devops.
+              sophomore at SMVIT ,Bangalore presently pursuing my B.E. in
+              Electronics and Communication Engineering. I am into the field of
+              full stack web development and keenly interested in the fields of
+              cloud and devops.
             </p>
 
             <ul class="contact">
@@ -79,10 +93,10 @@
             <h4 class="card-info">Kartik Nandagaon</h4>
             <p>
               Hi, I am Kartik Nandagaon, co-developer of CampusConnect. I am a
-              sophomore at SMVIT ,Bangalore presently pursuing my B.E. in Electronics and
-              Communication Engineering. I am into the field of full stack web
-              development and keenly interested in the fields of cybersecurity
-              and machine learning.
+              sophomore at SMVIT ,Bangalore presently pursuing my B.E. in
+              Electronics and Communication Engineering. I am into the field of
+              full stack web development and keenly interested in the fields of
+              cybersecurity and machine learning.
             </p>
             <ul class="contact">
               <a href="#" class="media-links">
@@ -101,18 +115,19 @@
     </section>
     <footer class="footer"></footer>
 
-     <script >function myFunction() {
-  var nav = document.getElementById("toggle-collapse");
-  if (nav.className === "nav") {
-    nav.className += " collapse";
-  } else {
-    nav.className = "nav";
-  }
-}
+    <script>
+      function myFunction() {
+        var nav = document.getElementById("toggle-collapse");
+        if (nav.className === "nav") {
+          nav.className += " collapse";
+        } else {
+          nav.className = "nav";
+        }
+      }
 
-const createNav = () => {
-  const navbar = document.querySelector(".nav");
-  navbar.innerHTML = ` <div class="nav-menu flex-row">
+      const createNav = () => {
+        const navbar = document.querySelector(".nav");
+        navbar.innerHTML = ` <div class="nav-menu flex-row">
             <div class="nav-brand">
                 <a href="/" class="text-gray">CampusConnect</a>
 
@@ -159,22 +174,23 @@ const createNav = () => {
 
             </div>
         </div>`;
-};
-createNav();
+      };
+      createNav();
 
-//nav popup
-const userImageButton=document.querySelector('#user-img');
-const userPop=document.querySelector('.login-logout-popup');
-const popuptext=document.querySelector('.account-info');
-const actionBtn=document.querySelector('#user-btn');
+      //nav popup
+      const userImageButton = document.querySelector("#user-img");
+      const userPop = document.querySelector(".login-logout-popup");
+      const popuptext = document.querySelector(".account-info");
+      const actionBtn = document.querySelector("#user-btn");
 
-userImageButton.addEventListener('click',()=>{
-    userPop.classList.toggle('hide');
-})
-</script>
-   <script>const createFooter = () => {
-  const footer = document.querySelector("footer");
-  footer.innerHTML = `      <div class="footer-content">
+      userImageButton.addEventListener("click", () => {
+        userPop.classList.toggle("hide");
+      });
+    </script>
+    <script>
+      const createFooter = () => {
+        const footer = document.querySelector("footer");
+        footer.innerHTML = `      <div class="footer-content">
         <img
           src="{%static 'shop/campusconnectlogo.jpg' %}"
           alt="img"
@@ -216,8 +232,8 @@ userImageButton.addEventListener('click',()=>{
       <p class="footer-credit">
         | Copyright © 2021 CampusConnect.com | All Rights Reserved
       </p>`;
-};
-createFooter();
-</script>
+      };
+      createFooter();
+    </script>
   </body>
 </html>

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 import datetime
 from django.contrib import messages
-
+from .forms import PostForm
 
 def home(request):
     blog = Blogpost.objects.all()
@@ -13,36 +13,39 @@ def home(request):
 
 def editor(request,id):
     post = Blogpost.objects.filter(post_id=id)[0]
-    print(post.content)
     if request.method == "POST":
         title = request.POST.get("title")
-        content = request.POST.get("content")
-        if request.FILES.get("banner"):
-            image = request.FILES.get("banner")
-            post.Banner_image=image
-        post.title=title
-        post.content=content
-        post.pub_date=datetime.datetime.now()
-        print(post.title)
-        post.save()
-        return redirect("/blog/dashboard")
-    return render(request, 'blog/editor.html',{"post":post})
+        form = PostForm(instance=post, data=request.POST) 
+        if form.is_valid():
+            post_item=form.save(commit=False)
+            post_item.title=title
+            post_item.pub_date=datetime.datetime.now()
+            if request.FILES.get("banner"):
+                image = request.FILES.get("banner")
+                post_item.Banner_image=image
+            post_item.save()
+            return redirect("/blogs/dashboard")
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'blog/editor.html',{"post":post,"form":form})
 
 def write(request):
     if request.user.is_authenticated:
         if request.method == "POST":
             title = request.POST.get("title")
-            content = request.POST.get("content")
             image = request.FILES.get("banner")
-            blog =Blogpost(
-                user=request.user,
-                title=title,
-                content=content,
-                pub_date=datetime.datetime.now(),
-                Banner_image=image,
-            )
-            blog.save()
-        return render(request, 'blog/write.html')
+            form=PostForm(request.POST)
+            if form.is_valid():
+                post_item=form.save(commit=False)
+                post_item.user=request.user
+                post_item.title=title
+                post_item.pub_date=datetime.datetime.now()
+                post_item.Banner_image=image
+                post_item.save()
+            return redirect("/blogs")
+        else:
+            form = PostForm()
+        return render(request, 'blog/write.html',{'form':form})
     else:
         messages.error(request, "Login to continue")
         return redirect("/login")

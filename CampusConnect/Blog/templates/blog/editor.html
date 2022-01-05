@@ -22,14 +22,12 @@
                     alt="upload banner"></label>
         </div>
         <div class="blog">
-            {{post.body|safe}}
             <input type="text" class="title" name="title" value="{{post.title}}"></input>
-            <input type="text" class="article" name="content" value="{{post.content}}"></input>
+            {{form.media}}
+            {{form.as_p}}
         </div>
         <div class="blog-options">
             <button class="btn dark publish-btn">publish</button>
-            <input type="file" accept="image/*" id="image-upload" name ="blogimage" hidden>
-            <label for="image-upload" class="btn grey upload-btn">Upload Image</label>
         </div>
     </form>
 
